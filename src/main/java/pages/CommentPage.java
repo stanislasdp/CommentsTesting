@@ -1,5 +1,6 @@
 package pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
@@ -16,10 +17,10 @@ public class CommentPage extends Page {
     private WebElement commentNumber;
     @FindBy (id = "Active")
     private WebElement active;
-    @FindBy(css ="div[id='alvailablecategories'] > .categoryitem > input[type ='checkbox']")
+    @FindBy(css ="//div[id='alvailablecategories'] > .categoryitem > input[type ='checkbox']")
     private List<WebElement> availableCategories;
 
-    @FindBy(css ="div[id='selectedCategories'] > .categoryitem > input[type ='checkbox']")
+    @FindBy(css ="//div[id='selectedCategories'] > .categoryitem > input[type ='checkbox']")
     private List<WebElement> selectedCategories;
 
 
@@ -73,7 +74,7 @@ public class CommentPage extends Page {
                 element.click();
             }
             for (int categ: categories) {
-                if (categ == (value -1)) {
+                if (categ == (value - 1)) {
                     element.click();
                 }
             }
@@ -97,7 +98,6 @@ public class CommentPage extends Page {
         }
         return this;
     }
-
 
 
     public CommentPage clickAddSelectedCategories() {
@@ -134,5 +134,12 @@ public class CommentPage extends Page {
         saveAndReturnButton.click();
         return pages.mainPage;
     }
+
+    public CommentPage checkCategoryValidation (String text)  {
+        WebElement webElement = driver.findElement(By.xpath("//div[@id='errorfield' "
+               + "and contains(.,'"+ text + "')]"));
+        return this;
+    }
+
 
 }

@@ -17,7 +17,8 @@ public class ApplicationManager implements ApplicationManage {
     public ApplicationManager() {
         startURL = PropertyLoader.getProperty("url");
         //System.setProperty("webdriver.gecko.driver","D:\\KiryanStanislav\\screnshots\\SoftBank\\PCC-22108\\PCC-22108\\PCC-22108\\selenium\\geckodriver.exe");
-        System.setProperty("webdriver.chrome.driver", "/media/MEDIA/install/linux/instALL/chromedriver");
+       // System.setProperty("webdriver.chrome.driver", "/media/MEDIA/install/linux/instALL/chromedriver");
+        System.setProperty("webdriver.chrome.driver", "/mnt/JAVA/instALL/chromedriver");
         driver = new ChromeDriver();
 
         navigationManage = new NavigationManager(this);
