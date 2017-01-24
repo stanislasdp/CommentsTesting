@@ -10,7 +10,7 @@ import java.util.Properties;
  */
 public class PropertyLoader  {
 
-    private static final String PROP_FILE = "/home/stas/softServe/selenium examples/CommentsTest2/src/main/resources/Data.properties";
+    private static final String PROP_FILE = "/home/stas/IdeaProjects/CommentsTesting/src/main/resources/Data.properties";
 
     public static String getProperty(String property) {
 
