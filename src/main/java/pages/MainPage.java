@@ -1,15 +1,14 @@
 package pages;
 
-import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 
 import java.util.List;
+
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
 /**
  * Created by skir on 1/23/2017.
@@ -59,8 +58,26 @@ public class MainPage extends Page {
     @FindBy(id="SelectedCateg")
     private WebElement categoriesDropDown;
 
+
+    @FindBy(xpath = ".//*[@class = 'webgrid-row-style' "
+           + "or @class = 'webgrid-alternating-row']/td[@class='numbercolumn']")
+    private List<WebElement> commentsNumbers;
+
+    @FindBy(xpath = ".//*[@class = 'webgrid-row-style' "
+           + "or @class = 'webgrid-alternating-row']/td[@class='textcolumn']")
+    private List<WebElement> commentsText;
+
+    @FindBy(xpath = ".//*[@class = 'webgrid-row-style' "
+            + "or @class = 'webgrid-alternating-row']/td[@class='inactivecolumn']")
+    private List<WebElement> commentsStatuses;
+
+    @FindBy(xpath = ".//*[@class = 'webgrid-row-style' "
+            + "or @class = 'webgrid-alternating-row']/td[@class='categorycolumn']")
+    private List<WebElement> commentCategories;
+
     @FindBy(css = ".checkedcolumn>input[type='checkbox']")
     private List<WebElement> commentsCheckboxes;
+
 
 
     public CommentPage clickNewCommentButt() {
@@ -84,13 +101,12 @@ public class MainPage extends Page {
         return pages.commentsPage;
     }
 
-    public MainPage selectAction(Action action) {
+    public void selectAction(Action action) {
         Select actionDropDownSelect = new Select(actionDropDown);
         actionDropDownSelect.selectByVisibleText(action.getText());
-        return this;
     }
 
-    public MainPage selectCategoryToFilter(int category) {
+    public void selectCategoryToFilter(int category) {
 
         Select catDropDownSelect = new Select(categoriesDropDown);
         if ((category >= 1 && category <= 6) || category == -1) {
@@ -98,77 +114,99 @@ public class MainPage extends Page {
         } else {
             throw new IllegalArgumentException("not supported category");
         }
-        return this;
     }
 
-    public MainPage selectStatusToFilter(Status status) {
+    public void selectStatusToFilter(Status status) {
 
         Select statusDropDownSelect = new Select(statusesDropDown);
         statusDropDownSelect.selectByValue(status.getValue());
-        return this;
     }
 
-    public MainPage clickApplyButton() {
+    public void clickApplyButton() {
         applyButton.click();
-        return this;
     }
 
 
-    public MainPage clickSortTableByNumber() {
+    public void clickSortTableByNumber() {
         numberHeader.click();
-        return this;
     }
 
-    public MainPage clickSortTableByCommentText() {
+    public void clickSortTableByCommentText() {
         commentTextHeader.click();
-        return this;
     }
 
-    public MainPage clickSortTableByActiveComment() {
+    public void clickSortTableByActiveComment() {
         activeTextHeader.click();
-        return this;
     }
 
-    public MainPage clickSortTableByCategory() {
+    public void clickSortTableByCategory() {
         categoryHeader.click();
-        return this;
     }
 
 
-
-    public MainPage checkCommentChecBoxinTable(int rowNumber)
+    public void checkCommentChecBoxinTable(int rowNumber)
     {
      commentsCheckboxes.get(rowNumber).click();
-     return this;
     }
 
-    public MainPage clickNextPageIfExists() {
+    public void clickNextPageIfExists() {
         try {
-            WebElement nextPage = driver.findElement(By.xpath(".//*[@class='webgrid-footer']/td[1]/a[last()][contains(text(),'>')]"));
+            WebElement nextPage = driver.findElement(
+                    By.xpath(".//*[@class='webgrid-footer']/td[1]/a[last()][contains(text(),'>')]"));
             nextPage.click();
         }
         catch (NoSuchElementException e)
         {
             //TODO
         }
-        return this;
     }
 
 
-    public MainPage clickPreviousPageIfExists() {
+    public void clickPreviousPageIfExists() {
         try {
-            WebElement prevtPage = driver.findElement(By.xpath(".//*[@class='webgrid-footer']/td[1]/a[1][contains(text(),'<')]"));
+            WebElement prevtPage = driver.findElement(
+                    By.xpath(".//*[@class='webgrid-footer']/td[1]/a[1][contains(text(),'<')]"));
             prevtPage.click();
         }
         catch (NoSuchElementException e)
         {
             //TODO
         }
-        return this;
     }
 
 
-   public enum Action {
+    public int getCommentRowNumberInTable(int commentID) {
+
+        for (int i = 0; i < commentsNumbers.size() ; i++) {
+            if (Integer.parseInt(commentsNumbers.get(i).getText()) == commentID) {
+                return i;
+            }
+        }
+        throw new NoSuchElementException("no such number in the current page");
+    }
+
+    public String getCommentsTextInTable(int rowNumber) {
+        return commentsText.get(rowNumber).getText();
+    }
+
+    public String getCommentActiveStatus(int rowNumber) {
+        return commentsStatuses.get(rowNumber).getText();
+    }
+
+    public String getCommentsCategories(int rowNumber) {
+        return commentCategories.get(rowNumber).getText();
+    }
+
+
+
+    @Override
+    public MainPage ensurePageLoaded() {
+        super.ensurePageLoaded();
+        wait.until(presenceOfElementLocated(By.cssSelector("#title>h1")));
+        return this;
+    }
+
+    public enum Action {
         ACTIVATE {
             @Override
             String getText() {

@@ -12,16 +12,17 @@ public class ApplicationManager implements ApplicationManage {
     private String startURL;
     private WebDriver driver;
     private NavigationManage navigationManage;
+    private CommentHelper commentHelper;
 
 
     public ApplicationManager() {
         startURL = PropertyLoader.getProperty("url");
-        //System.setProperty("webdriver.gecko.driver","D:\\KiryanStanislav\\screnshots\\SoftBank\\PCC-22108\\PCC-22108\\PCC-22108\\selenium\\geckodriver.exe");
+      //  System.setProperty("webdriver.gecko.driver","D:\\KiryanStanislav\\screnshots\\SoftBank\\PCC-22108\\PCC-22108\\PCC-22108\\selenium\\geckodriver.exe");
        // System.setProperty("webdriver.chrome.driver", "/media/MEDIA/install/linux/instALL/chromedriver");
         System.setProperty("webdriver.chrome.driver", "/mnt/JAVA/instALL/chromedriver");
         driver = new ChromeDriver();
-
         navigationManage = new NavigationManager(this);
+        commentHelper = new CommentHelper(this);
 
     }
 
@@ -33,11 +34,18 @@ public class ApplicationManager implements ApplicationManage {
         return navigationManage;
     }
 
-    public void stopApp() {
-        driver.close();
-    }
 
     public WebDriver getDriver() {
         return driver;
     }
+
+    public CommentHelper getCommentHelper() {
+        return commentHelper;
+    }
+
+    public void stopApp() {
+       driver.close();
+        driver.quit();
+    }
+
 }

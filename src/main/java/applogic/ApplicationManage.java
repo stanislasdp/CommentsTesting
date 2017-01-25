@@ -11,4 +11,5 @@ public interface ApplicationManage
     void stopApp();
     WebDriver getDriver();
     String getStartURL();
+    CommentHelper getCommentHelper();
 }

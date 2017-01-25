@@ -41,13 +41,4 @@ public abstract class Page {
         }
     }
 
-  /*  //Temp
-    public Page() {
-
-    }*/
-
-
-
-
-
 }

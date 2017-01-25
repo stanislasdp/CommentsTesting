@@ -3,8 +3,11 @@ package pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.List;
+
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
 /**
  * Created by skir on 1/23/2017.
@@ -17,10 +20,10 @@ public class CommentPage extends Page {
     private WebElement commentNumber;
     @FindBy (id = "Active")
     private WebElement active;
-    @FindBy(css ="//div[id='alvailablecategories'] > .categoryitem > input[type ='checkbox']")
+    @FindBy(css ="div[id='alvailablecategories'] > .categoryitem > input[type ='checkbox']")
     private List<WebElement> availableCategories;
 
-    @FindBy(css ="//div[id='selectedCategories'] > .categoryitem > input[type ='checkbox']")
+    @FindBy(css ="div[id='selectedCategories'] > .categoryitem > input[type ='checkbox']")
     private List<WebElement> selectedCategories;
 
 
@@ -50,84 +53,66 @@ public class CommentPage extends Page {
     }
 
 
-    public CommentPage enterCommentText(String text) {
+    public void enterCommentText(String text) {
         commentText.sendKeys(text);
-        return this;
     }
 
-    public CommentPage enterCommentNumber(int number) {
+    public void enterCommentNumber(int number) {
         commentNumber.sendKeys(number + "");
-        return this;
     }
 
-    public CommentPage checkActiveCheckbox() {
+    public void checkActiveCheckbox() {
         active.click();
-        return this;
     }
 
-    public CommentPage checkAvailableCategories(int category, int... categories) {
+    public void checkAvailableCategories(List<Integer> categories) {
 
         for (WebElement element: availableCategories) {
 
             int value = Integer.parseInt(element.getAttribute("value"));
-            if ((value -1) == category) {
-                element.click();
-            }
             for (int categ: categories) {
-                if (categ == (value - 1)) {
+                if (categ == (value)) {
                     element.click();
                 }
             }
         }
-        return this;
     }
 
 
-    public CommentPage checkSelectedCategories(int category, int... categories) {
+    public void checkSelectedCategories(List<Integer> categories) {
 
         for (WebElement element: selectedCategories) {
             int value = Integer.parseInt(element.getAttribute("value"));
-            if ((value - 1) == category) {
-                element.click();
-            }
             for (int categ: categories) {
-                if (categ == (value - 1)) {
+                if (categ == (value)) {
                     element.click();
                 }
             }
         }
-        return this;
     }
 
-
-    public CommentPage clickAddSelectedCategories() {
+    public void clickAddSelectedCategories() {
         addSelectedCategoriesButton.click();
-        return this;
     }
 
-    public CommentPage clickRemoveSelectedCategories() {
+    public void clickRemoveSelectedCategories() {
         removeSelectedCategoriesButton.click();
-        return this;
     }
 
-    public CommentPage clickAddAllCategories() {
+    public void clickAddAllCategories() {
         addAllCategoriesButton.click();
-        return this;
     }
 
-    public CommentPage clickRemoveAllCategories() {
+    public void clickRemoveAllCategories() {
         removeAllCategoriesButton.click();
-        return this;
     }
 
-    public CommentPage clickRefreshButton() {
+    public void clickRefreshButton() {
         refreshButton.click();
-        return this;
     }
 
-    public CommentPage clickSaveButton() {
+    public void clickSaveButton() {
         saveButton.click();
-        return this;
     }
 
     public MainPage clickSaveAndReturnButton() {
@@ -135,11 +120,17 @@ public class CommentPage extends Page {
         return pages.mainPage;
     }
 
-    public CommentPage checkCategoryValidation (String text)  {
+    public void checkCategoryValidation (String text)  {
         WebElement webElement = driver.findElement(By.xpath("//div[@id='errorfield' "
                + "and contains(.,'"+ text + "')]"));
-        return this;
+
     }
 
-
+    @Override
+    public CommentPage ensurePageLoaded() {
+        super.ensurePageLoaded();
+        //wait until comment text field will be present
+        wait.until(presenceOfElementLocated(By.cssSelector("#Number")));
+        return this;
+    }
 }
