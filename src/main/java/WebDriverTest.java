@@ -3,6 +3,7 @@ import applogic.ApplicationManager;
 import applogic.CommentHelper;
 import model.Category;
 import model.Comment;
+import pages.CommentPage;
 import pages.MainPage;
 
 import java.util.ArrayList;
@@ -16,48 +17,42 @@ public class WebDriverTest {
     public static void main(String[] args) {
 
         ApplicationManage applicationManage = new ApplicationManager();
+       MainPage mainPage = applicationManage.getNavigationManage().openMainPage();
+       mainPage.ensurePageLoaded();
+        mainPage.checkCommentChecBoxinTable(1);
+        mainPage.selectStatusToFilter("1");
+        mainPage.selectCategoryToFilter(4);
+        mainPage.selectAction("Activate");
+
+        System.out.println(mainPage.getStatusToFilter());
+        System.out.println(mainPage.getCategoryToFilter());
+        System.out.println(mainPage.getAction());
+
+
+//
+
+       /* applicationManage.getNavigationManage().openMainPage();
         CommentHelper commentHelper = applicationManage.getCommentHelper();
-        List<Category> expCommentCateg = new ArrayList<>();
-        expCommentCateg.add(new Category("Cat0"));
-        Comment newComment = new Comment(999, "text" ,true,expCommentCateg);
-        commentHelper.addNewComment(newComment);
-        commentHelper.sortCommentsByNumber();
-        commentHelper.sortCommentsByNumber();
-        Comment comment = commentHelper.getCommentFromMainPage(999);
+        List<Category> newCommentCateg = new ArrayList<>();
+        newCommentCateg.add(new Category("Cat0"));
+        newCommentCateg.add(new Category("Cat1"));
+        newCommentCateg.add(new Category("Cat2"));
+        Comment newComment = new Comment(999, "text",true, newCommentCateg)*/;
+
+      /*  List<Category> oldCommentCateg = new ArrayList<>();
+        Comment oldComment = new Comment(6,"6",false, oldCommentCateg);
+
+
+        commentHelper.editExistingComment(oldComment);*/
+      //  commentHelper.addNewComment(newComment);
+        //sort comments in ascending order
+    //*    commentHelper.sortCommentsByNumber();*//*
+        // sort comments in descending order*/
+       /* commentHelper.sortCommentsByNumber();*/
+       /* Comment comment = commentHelper.getCommentFromMainPage(19);
         System.out.println(comment.getCommentId());
         System.out.println(comment.getCommentText());
-        System.out.println(comment.isActive());
-        System.out.println(comment.getCategories().get(4).getIntCategory());
-       /* applicationManage.getNavigationManage().openMainPage().selectStatusToFilter(MainPage.Status.ACTIVE).clickApplyButton();*//*
-        MainPage mainPage = applicationManage.getNavigationManage().openMainPage();
-        int number = mainPage.ensurePageLoaded().getCommentRowNumberInTable(5);
-       String commentText = mainPage.getCommentsTextInTable(number);
-       String commentActive = mainPage.getCommentActiveStatus(number);
-       String commentCategories = mainPage.getCommentsCategories(number);
-        System.out.println(commentText);
-        System.out.println(commentActive);*/
-
-       /* CommentPage commentPage = mainPage.clickNewCommentButt();
-        commentPage.ensurePageLoaded();
-        commentPage.enterCommentNumber(2);
-        commentPage.enterCommentText("44");
-        commentPage.checkAvailableCategories(2,3);
-        commentPage.clickAddSelectedCategories();
-        commentPage.checkSelectedCategories(3);
-        commentPage.clickRemoveSelectedCategories();*/
-        /*CommentPage commentPage = mainPage.clickNewCommentButt();
-        commentPage.enterCommentText("11");
-        commentPage.enterCommentNumber(4);*/
-       //pplicationManage.getNavigationManage().openMainPage().ensurePageLoaded().clickNewCommentButt().enterCommentText("11");*/
-        /*applicationManage.stopApp();*/
-       /*System.setProperty("webdriver.gecko.driver","/mnt/JAVA/instALL/geckodriver");
-        WebDriver driver = new FirefoxDriver();
-        driver.get("http://commentssprintone.azurewebsites.net/Editor/NewComment");
-
-        PageManager pageManager = new PageManager(driver);
-        pageManager.commentsPage.enterCommentNumber(1);
-        pageManager.commentsPage.enterCommentText("tttttt");
-        pageManager.commentsPage.checkActiveCheckbox();*/
-        /*pageManager.commentsPage.checkAvailableCategories(1,2,3);*/
+        List<Category> actCategories = comment.getCategories();
+        System.out.println(actCategories.get(0).getCategory());*/
     }
 }

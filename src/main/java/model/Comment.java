@@ -18,6 +18,21 @@ public class Comment {
         this.categories = categories;
     }
 
+    public void setCommentText(String commentText) {
+        this.commentText = commentText;
+    }
+
+    public void setCommentId(int commentId) {
+        this.commentId = commentId;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
     public String getCommentText() {
         return commentText;
