@@ -3,9 +3,7 @@ package pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
@@ -21,14 +19,24 @@ public class CommentPage extends Page {
     private WebElement commentNumber;
     @FindBy (id = "Active")
     private WebElement active;
+
     @FindBy(css ="div[id='alvailablecategories'] > .categoryitem > input[type ='checkbox']")
-    private List<WebElement> availableCategories;
+    private List<WebElement> availableCategorieschekboxes;
+
+    @FindBy(css ="div[id='alvailablecategories'] > .categoryitem > span")
+    private List<WebElement> availableCategoriesText;
+
 
     @FindBy(css ="div[id='selectedCategories'] > .categoryitem > input[type ='checkbox']")
-    private List<WebElement> selectedCategories;
+    private List<WebElement> selectedCategoriesCheckboxes;
+
+    @FindBy(css ="div[id='selectedCategories'] > .categoryitem > span")
+    private List<WebElement> selectedCategoriesText;
+
 
     @FindBy(css = "input[name='CurSelect']")
     private WebElement addSelectedCategoriesButton;
+
     @FindBy(css = "input[name='AllSelect']")
     private WebElement addAllCategoriesButton;
 
@@ -38,7 +46,7 @@ public class CommentPage extends Page {
     @FindBy(css = "input[name='AllUnSelectBtn']")
     private WebElement removeAllCategoriesButton;
 
-    @FindBy(css = "#editor-navigation > a")
+    @FindBy (css = "#editor-navigation >a")
     private WebElement refreshButton;
 
     @FindBy(css = ".buttonAsLink[value='Save']")
@@ -47,6 +55,9 @@ public class CommentPage extends Page {
     @FindBy(css = ".buttonAsLink[value='Save & Return']")
     private WebElement saveAndReturnButton;
 
+    @FindBy(css = "#editor-navigation > a")
+    private WebElement returnButton;
+
 
     public CommentPage(PageManager pages) {
         super(pages);
@@ -54,6 +65,7 @@ public class CommentPage extends Page {
 
 
     public CommentPage enterCommentText(String text) {
+        commentText.clear();
         commentText.sendKeys(text);
         return this;
     }
@@ -62,13 +74,14 @@ public class CommentPage extends Page {
        return commentText.getAttribute("value");
     }
 
-    public CommentPage enterCommentNumber(int number) {
+    public CommentPage enterCommentNumber(String number) {
+        commentNumber.clear();
         commentNumber.sendKeys(number + "");
         return this;
     }
 
-    public int getCommentNumber() {
-        return Integer.parseInt(commentNumber.getAttribute("value"));
+    public String getCommentNumber() {
+        return commentNumber.getAttribute("value");
     }
 
     public CommentPage checkActiveCheckbox() {
@@ -76,59 +89,53 @@ public class CommentPage extends Page {
         return this;
     }
 
-    public boolean isActiveCheckboxChecked() {
+    public boolean isCommentChecked() {
         return active.isSelected();
     }
 
-
-    public CommentPage checkAvailableCategories(List<Integer> categories) {
-
-        for (WebElement element: availableCategories) {
-            int value = Integer.parseInt(element.getAttribute("value"));
-            for (int categ: categories) {
-                if (categ == (value - 1)) {
-                        element.click();
-                    }
-                }
-            }
-        return this;
-        }
-
-        public List<Integer> getCheckedAvailableCategories() {
-
-        List<Integer> categories = new ArrayList<>();
-            for (WebElement webElement: availableCategories) {
-                if (webElement.isSelected()) {
-                    categories.add(Integer.parseInt(webElement.getAttribute("value")) - 1);
-                }
-
-            }
-            return categories;
-        }
-
-
-    public CommentPage checkSelectedCategories(List<Integer> categories) {
-        for (WebElement element: selectedCategories) {
-            int value = Integer.parseInt(element.getAttribute("value"));
-            for (int categ: categories) {
-                if (categ == (value - 1)) {
-                        element.click();
-                    }
-                }
-            }
-        return this;
-        }
-
-    public List<Integer> getCheckedSelectedCategories() {
-
-        List<Integer> categories = new ArrayList<>();
-        for (WebElement webElement: selectedCategories) {
-            if (webElement.isSelected()) {
-                categories.add(Integer.parseInt(webElement.getAttribute("value")) - 1);
-            }
-        }
-        return categories;
+    public int getAvaialbleCategoriesLength() {
+        return  availableCategorieschekboxes.size();
     }
+
+
+    public CommentPage checkAvailableCategory(int categoryNumber) {
+
+        for (WebElement checkbox : availableCategorieschekboxes) {
+            int checkBoxNumber = Integer.parseInt(checkbox.getAttribute("value"));
+            if (checkBoxNumber == categoryNumber +1) {
+                checkbox.click();
+            }
+        }
+        return this;
+    }
+
+    public String getAvaiableCategoryText(int categoryNumber) {
+        return availableCategoriesText.get(categoryNumber).getText();
+    }
+
+
+
+
+    public CommentPage checkSelectedCategory(int categoryNumber) {
+
+        for (WebElement checkbox : selectedCategoriesCheckboxes) {
+            int checkBoxNumber = Integer.parseInt(checkbox.getAttribute("value"));
+            if (checkBoxNumber == categoryNumber +1) {
+                checkbox.click();
+            }
+        }
+        return this;
+    }
+
+    public String getSelectedCategoryText(int categoryNumber) {
+       return selectedCategoriesText.get(categoryNumber).getText();
+    }
+
+    public int getSelelctedCategoriesLength() {
+        return  selectedCategoriesCheckboxes.size();
+    }
+
+
 
 
     public CommentPage clickAddSelectedCategories() {
@@ -151,6 +158,7 @@ public class CommentPage extends Page {
         return this;
     }
 
+
     public CommentPage clickRefreshButton() {
         refreshButton.click();
         return this;
@@ -163,14 +171,18 @@ public class CommentPage extends Page {
 
     public MainPage clickSaveAndReturnButton() {
         saveAndReturnButton.click();
-        return pages.mainPage;
+        return pages.getMainPage();
     }
 
     public CommentPage checkCategoryValidation (String text)  {
         WebElement webElement = driver.findElement(By.xpath("//div[@id='errorfield' "
                + "and contains(.,'"+ text + "')]"));
         return this;
+    }
 
+    public CommentPage clickReturnButton() {
+        returnButton.click();
+        return this;
     }
 
     @Override

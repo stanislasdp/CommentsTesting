@@ -1,14 +1,13 @@
 package pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
@@ -76,31 +75,34 @@ public class MainPage extends Page {
             + "or @class = 'webgrid-alternating-row']/td[@class='categorycolumn']")
     private List<WebElement> commentCategories;
 
-    @FindBy(css = ".checkedcolumn>input[type='checkbox']")
+    @FindBy(css = ".checkedcolumn > input[type='checkbox']")
     private List<WebElement> commentsCheckboxes;
+
+    @FindBy(css = ".webgrid-footer>td>a")
+    List<WebElement> tablepages;
+
 
     @FindBy (css = "#logindisplay>a")
     private WebElement refReshButton;
 
     public CommentPage clickNewCommentButt() {
         newComment.click();
-        return pages.commentsPage;
+        return pages.getCommentsPage();
     }
 
     public CommentPage clickDuplicateCommentButt() {
         duplicateComment.click();
-        return pages.commentsPage;
+        return pages.getCommentsPage();
     }
 
     public CommentPage clickEditCommentButt() {
-
         editComment.click();
-        return pages.commentsPage;
+        return pages.getCommentsPage();
     }
 
-    public MainPage clickDeleteCommentButt() {
+    public DeletePage clickDeleteCommentButt() {
         deleteComment.click();
-        return this;
+        return pages.getDeletePage();
     }
 
     public MainPage selectAction(String action) {
@@ -169,46 +171,75 @@ public class MainPage extends Page {
     }
 
 
-    public MainPage checkCommentChecBoxinTable(int rowNumber)
+    public MainPage checkCommentCheckBoxInTable(int rowNumber)
     {
      commentsCheckboxes.get(rowNumber).click();
         return this;
     }
 
-    public boolean isCheckBoxinTableChecked (int rowNumber) {
+    public boolean isCheckBoxInTableChecked (int rowNumber) {
         return commentsCheckboxes.get(rowNumber).isSelected();
     }
 
     public MainPage clickPageNumber(int rowNumber) {
+
         WebElement nextPage = driver.findElement(
                 By.xpath(".//*[@class='webgrid-footer']/td[1]/a[contains(text(),'" + rowNumber+ "')]"));
+        nextPage.click();
         return this;
     }
 
-    public MainPage clickNextPageIfExists() {
-
-            WebElement nextPage = driver.findElement(
-                    By.xpath(".//*[@class='webgrid-footer']" +
-                            "/td[1]/a[last()][contains(text(),'>')]"));
-            nextPage.click();
-        return this;
+    public int getCurrentPageNumber() {
+        JavascriptExecutor  js =((JavascriptExecutor) driver);
+        String result = (String) js.executeScript
+                ("return $('tr.webgrid-footer>td').clone().children().remove().end().text().trim();");
+        return Integer.parseInt(result);
     }
 
+    public MainPage clickNextPage() {
 
-    public MainPage clickPreviousPageIfExists() {
-        try {
-            WebElement prevtPage = driver.findElement(
-                    By.xpath(".//*[@class='webgrid-footer']/td[1]/a[1][contains(text(),'<')]"));
-            prevtPage.click();
-
+        WebElement lastPage = tablepages.get(tablepages.size() -1);
+        if (lastPage.getText().equals(">")) {
+            lastPage.click();
+            return this;
+        } else {
+            throw new IllegalStateException("next page symbol is not found on the page");
         }
-        catch (NoSuchElementException e)
-        {
-            //TODO
-        }
-        return this;
     }
 
+    public boolean isNextpageExists() {
+
+        WebElement prPage = driver.findElement(By.cssSelector(".webgrid-footer>td>a:last-child"));
+        return prPage.getText().equals(">");
+    }
+
+    public boolean isPageExists(int pageNum) {
+
+        for (WebElement page: tablepages) {
+            if (!page.getText().equals("<") && !page.getText().equals(">")) {
+                if (Integer.parseInt(page.getText()) == pageNum) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    public MainPage clickPreviousPage() {
+        WebElement prevPage = tablepages.get(0);
+        if (prevPage.getText().equals("<")) {
+            prevPage.click();
+            return this;
+        } else {
+            throw new IllegalStateException("pewvious page symbol is not found on the page");
+        }
+    }
+
+    public boolean isPreviousPageExists() {
+            WebElement prPage = driver.findElement(By.cssSelector(".webgrid-footer>td>a:first-child"));
+            return prPage.getText().equals("<");
+    }
 
     public int getCommentRowNumberInTable(int commentID) {
 
@@ -220,8 +251,8 @@ public class MainPage extends Page {
         throw new NoSuchElementException("no such number in the current page");
     }
 
-    public int getCommentNumberfromRowInTable(int rowNum) {
-        return Integer.parseInt(commentsNumbers.get(rowNum).getText());
+    public String getCommentNumberfromRowInTable(int rowNum) {
+        return commentsNumbers.get(rowNum).getText();
     }
 
     public String getCommentsTextInTable(int rowNumber) {

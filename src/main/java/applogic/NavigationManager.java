@@ -18,6 +18,6 @@ public class NavigationManager extends DriverHelper implements NavigationManage 
 
     public MainPage openMainPage() {
         driver.get(startURL);
-        return pageManager.mainPage;
+        return pageManager.getMainPage();
     }
 }

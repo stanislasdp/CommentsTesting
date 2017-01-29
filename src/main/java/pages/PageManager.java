@@ -8,14 +8,31 @@ import org.openqa.selenium.support.PageFactory;
  */
 public class PageManager {
     private WebDriver driver;
-    public MainPage mainPage;
-    public CommentPage commentsPage;
+
+
+
+    private MainPage mainPage;
+    private CommentPage commentsPage;
+    private DeletePage deletePage;
 
     public PageManager(WebDriver driver) {
         this.driver = driver;
         mainPage = initElements(new MainPage(this));
         commentsPage = initElements(new CommentPage(this));
+        deletePage = initElements(new DeletePage(this));
+    }
 
+
+    public MainPage getMainPage() {
+        return mainPage;
+    }
+
+    public CommentPage getCommentsPage() {
+        return commentsPage;
+    }
+
+    public DeletePage getDeletePage() {
+        return  deletePage;
     }
 
     public WebDriver getWebDriver() {
