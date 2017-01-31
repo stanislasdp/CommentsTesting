@@ -16,6 +16,7 @@ public class WebDriverTest {
 
     public static void main(String[] args) {
 
+        //some change for fetch
         ApplicationManage applicationManage = new ApplicationManager();
        MainPage mainPage = applicationManage.getNavigationManage().openMainPage();
         mainPage.ensurePageLoaded();
